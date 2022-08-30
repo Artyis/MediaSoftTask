@@ -28,15 +28,24 @@ public class FolderService {
         if(checkNameInFolders(folder.getPerson().getId(),folder.getPath())){
             folderRepository.save(folder);
         }else {
-            throw new RuntimeException("Имя уже есть");
+            throw new RuntimeException("Это имя папки уже есть");
         }
+
 
     }
 
     private Folder getFolder(CreateFolderDto createDto) {
+        if (createDto.getParentPath()!=null) {
+            return Folder.builder()
+                    .name(createDto.getName())
+                    .path(createDto.getParentPath() + "/" + createDto.getName())
+                    .person(createDto.getPerson())
+                    .parentPath(createDto.getParentPath())
+                    .build();
+        }
         return Folder.builder()
                 .name(createDto.getName())
-                .path(createDto.getParentPath()+"/"+createDto.getName())
+                .path("root")
                 .person(createDto.getPerson())
                 .parentPath(createDto.getParentPath())
                 .build();
@@ -45,10 +54,10 @@ public class FolderService {
         return folderRepository.getFolderByPersonId (personId,path);
     }
     public boolean checkNameInFolders (Integer personId, String path){
-        if(folderRepository.getFolderByPersonId (personId,path).getId()!=null){
-            return true;
-        }else {
+        if(folderRepository.getFolderByPersonId (personId,path)!=null){
             return false;
+        }else {
+            return true;
         }
     }
 

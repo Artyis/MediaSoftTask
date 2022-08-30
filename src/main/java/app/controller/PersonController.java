@@ -35,12 +35,12 @@ public class PersonController {
     public String newPerson(@AuthenticationPrincipal @ModelAttribute("person") CreatePersonDto personDto) {
         return "person/create";
     }
-    @PostMapping()
+    @PostMapping("/registration")
     public String create( @AuthenticationPrincipal @ModelAttribute("person") @Valid CreatePersonDto personDto,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return "person/create";
-
+        System.out.println(personDto.toString());
         service.save(personDto);
         return "redirect:/login";
     }
