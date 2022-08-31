@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class NoteService {
                 .title(createDto.getTitle())
                 .description(createDto.getDescription())
                 .status(createDto.getStatus())
-                .date(Date.valueOf(createDto.getDate().toLocalDate().toString()))
+                .date(Date.valueOf(LocalDate.now().toString()))
                 .folder(createDto.getFolder())
                 .build();
     }
@@ -61,7 +62,7 @@ public class NoteService {
         note.setTitle(createDto.getTitle());
         note.setDescription(createDto.getDescription());
         note.setStatus(createDto.getStatus());
-        note.setDate(createDto.getDate());
+        note.setDate(Date.valueOf(LocalDate.now().toString()));
         note.setFolder(createDto.getFolder());
         noteRepository.save(note);
     }
@@ -81,7 +82,7 @@ public class NoteService {
     }
     public NotesListDto getSortListDoneDate(Integer id, String path) {
         List<NoteDto> notes = new ArrayList<>();
-        noteRepository.getAllNotesSortingDoDate(id,path,"do").forEach(note -> notes.add(createNoteDto(note)));
+        noteRepository.getAllNotesSortingDoDate(id,path,"done").forEach(note -> notes.add(createNoteDto(note)));
         return new NotesListDto(notes);
     }
 

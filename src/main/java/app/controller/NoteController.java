@@ -1,6 +1,5 @@
 package app.controller;
 
-import app.model.dto.CreateFolderDto;
 import app.model.dto.CreateNoteDto;
 import app.service.FolderService;
 import app.service.NoteService;
@@ -26,7 +25,7 @@ public class NoteController {
     }
 
     @GetMapping("/createnote")
-    public String newNote(Model model, @ModelAttribute("model") CreateFolderDto folderDto, @PathVariable ("user_id") Integer userId) {
+    public String newNote(Model model, @ModelAttribute("model") CreateNoteDto noteDto, @PathVariable ("user_id") Integer userId) {
         model.addAttribute("folders", folderService.getList(userId));
         model.addAttribute("persona", personService.getPersonById(userId));
         return "note/create";

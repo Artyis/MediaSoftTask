@@ -2,6 +2,7 @@ package app.model.dto;
 
 
 import app.model.entity.Folder;
+import app.model.entity.Person;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,6 +20,6 @@ public class CreateNoteDto {
     @Pattern(regexp = "[а-яА-ЯёЁA-Za-z\s-]+", message = "Используйте только латинские и русские символы")
     private String description;
     private String status;
-    private Date date;
     private Folder folder;
+    private Person person;
 }

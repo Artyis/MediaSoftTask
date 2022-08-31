@@ -22,7 +22,7 @@ public class Note {
     private String status;
     @ManyToOne(cascade = CascadeType.ALL)
     private Person person;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Folder folder;
 
 }
