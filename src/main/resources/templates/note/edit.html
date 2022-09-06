@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CreateNote</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/user/{user_id}/{path}/{id}/edit}" th:object="${model}">
+    <label for="name">Enter title: </label>
+    <input type="text" th:field="*{title}"  th:value="${note.title}" id="name"/>
+    <div style="color:red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Name Error</div>
+    <br/>
+    <label for="desc">Enter Description: </label>
+    <input type="text" th:field="*{description}" th:value="${note.description}" id="desc"/>
+    <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</div>
+    <br/>
+    <label for="parentPath">Enter folder: </label>
+    <select th:field="*{folder.id}" id="parentPath">
+        <option th:each="i : ${folders}" th:value="${i.id}" th:text="${i.path}" th:selected="${i.id = note.folder.id}" </option>
+    </select>
+    <br/>
+    <label for="person">Select status: </label>
+    <select th:field="*{status}" id="person">
+        <option th:value="do" th:text="toDo"</option>
+        <option th:value="done" th:text="toDone"</option>
+    </select>
+    <label for="person">Its your account: </label>
+    <select th:field="*{person.id}" id="person">
+        <option th:value="${persona.id}" th:text="${persona.name}"</option>
+    </select>
+    <br/>
+    <input type="submit" value="Create Note!"/>
+</form>
+<br>
+<form th:method="DELETE" th:action="@{/user/{id}(id=${note.getPerson().getId()})/{path}(path=${note.getFolder().getPath()})/{noteid}(path=${note.getId()})/delete}">
+    <input type="submit" value="Delete"/> </form>
+</body>
+</html>

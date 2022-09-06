@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CreateFolder</title>
+</head>
+<body>
+<form th:method="PACTH" th:action="@{/user/{user_id}/{path}/edit}" th:object="${model}">
+    <label for="name">Enter folder name: </label>
+    <input type="text" th:field="*{name}" id="name" th:value="${folder.name}"/>
+    <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
+    <br/>
+    <label for="parentPath">Enter parent folder: </label>
+    <select th:field="*{parentPath}" id="parentPath">
+        <option th:each="i : ${folders}" th:value="${i.path}" th:text="${i.path}" th:selected="${i.path==folder.path}" </option>
+    </select>
+    <br/>
+    <label for="person">Its your account: </label>
+    <select th:field="*{person.id}" id="person">
+        <option th:value="${persona.id}" th:text="${persona.name}"</option>
+    </select>
+    <br/>
+    <input type="submit" value="Update folder!"/>
+</form>
+</body>
+</html>

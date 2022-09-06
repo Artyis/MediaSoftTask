@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${folder.getPath()}">Title</title>
+</head>
+<body>
+<div>
+    <br>
+    <a th:href="@{/user/{id}(id=${folder.getPerson().getId()})/{path}(path=${folder.getParentPath()})}"
+       th:text="${folder.getParentPath()}"></a>
+    </br>
+    <div>
+      <div th:each="folder1:${folders}">
+          <a th:href="@{/user/{id}(id=${folder1.getPerson().getId()})/{path}(path=${folder1.getPath()})}"
+             th:text="${folder1.getPath()}"></a>
+      </div>
+    </div>
+        <br>
+        <div th:each="noteDo:${notesDo}">
+            <a th:href="@{/user/{id}(id=${noteDo.getPerson().getId()})/{path}(path=${noteDo.getPath()})/notes/{note_id}(note_id=${noteDo.getId()})}"
+               th:text="${noteDo.getTitle()}"></a>
+            <p th:text="${noteDo.getDescription()}"></p>
+            <p th:text="${noteDo.getDate()}"></p>
+            <p th:text="${noteDo.getStatus()}"></p>
+        </div>
+        <div th:each="noteDone:${notesDone}">
+            <a th:href="@{/user/{id}(id=${noteDone.getPerson().getId()})/{path}(path=${noteDone.getPath()})/notes/{note_id}(note_id=${noteDone.getId()})}"
+               th:text="${noteDone.getTitle()}"></a>
+            <p th:text="${noteDone.getDescription()}"></p>
+            <p th:text="${noteDone.getDate()}"></p>
+            <p th:text="${noteDone.getStatus()}"></p>
+        </div>
+    </div>
+    <br>
+    <form th:method="DELETE" th:action="@{/user/{id}(id=${folder.getPerson().getId()})/{path}(path=${folder.getPath()})}">
+        <input type="submit" value="Delete"/> </form>
+</div>
+</body>
+</html>
