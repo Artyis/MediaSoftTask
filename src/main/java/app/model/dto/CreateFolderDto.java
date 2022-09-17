@@ -12,7 +12,7 @@ public class CreateFolderDto {
     @Pattern(regexp = "[a-z]+", message = "Используйте только латинские символы в нижнем регистре")
     private String name;
     private String path;
-    private Person person;
+    private PersonDto person;
     private String parentPath;
 
 }

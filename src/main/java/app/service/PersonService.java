@@ -2,6 +2,7 @@ package app.service;
 
 import app.model.dto.CreateFolderDto;
 import app.model.dto.CreatePersonDto;
+import app.model.dto.PersonDto;
 import app.model.entity.Person;
 import app.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
-public class PersonService implements UserDetailsService {
+public class PersonService {
     private PersonRepository personRepository;
     private FolderService folderService;
     private PasswordEncoder passwordEncoder;
@@ -28,15 +28,23 @@ public class PersonService implements UserDetailsService {
         this.folderService = folderService;
         this.passwordEncoder = passwordEncoder;
     }
-
+//Вот тут тоже есть вопросы в folders , ожидает List Folders
     public void save(CreatePersonDto createDto) {
         Person person = getPerson(createDto);
         personRepository.save(person);
         Integer id = personRepository.findAll().size();
+        Person findPerson =personRepository.getReferenceById(id);
         folderService.save( CreateFolderDto.builder()
                 .name("root")
                 .path("root")
-                .person(personRepository.getReferenceById(id))
+                .person(PersonDto.builder()
+                        .id(findPerson.getId())
+                        .email(findPerson.getEmail())
+                        .password(findPerson.getPassword())
+                        .folders(findPerson.getFolders())
+                        .notes(findPerson.getNotes())
+                        .build()
+                )
                 .build()
         );
     }
@@ -74,15 +82,4 @@ public class PersonService implements UserDetailsService {
         personRepository.delete(person);
     }
 
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Person person = personRepository.findByName(username);
-
-        if (person == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return person;
-    }
 }

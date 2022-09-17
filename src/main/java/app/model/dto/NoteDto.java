@@ -10,10 +10,11 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class NoteDto {
+    private Integer id;
     private String title;
     private String description;
     private String date;
     private String status;
-    private Person person;
-    private Folder parentFolder;
+    private PersonDto person;
+    private FolderDto parentFolder;
 }

@@ -14,9 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class FolderDto {
+    private Integer id;
     private String name;
     private String parentPath;
     private String path;
-    private Person person;
-    private List<Note> notes;
+    private PersonDto person;
+    private List<NoteDto> notes;
 }

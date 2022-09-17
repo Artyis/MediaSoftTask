@@ -2,13 +2,16 @@ package app.service;
 
 import app.model.dto.*;
 import app.model.entity.Folder;
+import app.model.entity.Note;
 import app.model.entity.Person;
 import app.repository.FolderRepository;
+import app.repository.NoteRepository;
 import app.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -17,10 +20,13 @@ public class FolderService {
 
     private FolderRepository folderRepository;
     private PersonRepository personRepository;
+    private NoteRepository noteRepository;
+
     @Autowired
-    public FolderService(FolderRepository folderRepository,PersonRepository personRepository) {
+    public FolderService(FolderRepository folderRepository, PersonRepository personRepository, NoteRepository noteRepository) {
         this.folderRepository = folderRepository;
         this.personRepository = personRepository;
+        this.noteRepository = noteRepository;
     }
     @Transactional
     public void save(CreateFolderDto createDto) throws RuntimeException {
@@ -35,21 +41,23 @@ public class FolderService {
     }
 
     private Folder getFolder(CreateFolderDto createDto) {
+        Person person = personRepository.getReferenceById(createDto.getPerson().getId());
         if (createDto.getParentPath()!=null) {
             return Folder.builder()
                     .name(createDto.getName())
                     .path(createDto.getParentPath() + "/" + createDto.getName())
-                    .person(createDto.getPerson())
+                    .person(person)
                     .parentPath(createDto.getParentPath())
                     .build();
         }
         return Folder.builder()
                 .name(createDto.getName())
                 .path("root")
-                .person(createDto.getPerson())
+                .person(person)
                 .parentPath(createDto.getParentPath())
                 .build();
     }
+
     public Folder getFolderByPersonId(Integer personId, String path) {
         return folderRepository.getFolderByPersonId (personId,path);
     }
@@ -72,10 +80,37 @@ public class FolderService {
         Folder folder =  getFolderByPersonId(personId,path);
         folderRepository.delete(folder);
     }
-    public List <Folder> getList(Integer id) {
-        return folderRepository.getAllFoldersByPersonId(id);
+    //Тут начинаются вопросы по "рекурсии"
+    public FoldersListDto getList(Integer id) {
+        List <FolderDto> folders = new ArrayList<>();
+        folderRepository.getAllFoldersByPersonId(id).forEach(folder -> folders.add(createNewFolderDto(folder)));
+        return new FoldersListDto (folders);
     }
-    public List <Folder> getListFoldersPath(Integer id, String parentPath) {
+    public FolderDto createNewFolderDto (Folder folder){
+        return FolderDto.builder()
+                .id(folder.getId())
+                .parentPath(folder.getParentPath())
+                .name(folder.getName())
+                .notes(getNoteListDoDto(folder))
+                .path(folder.getPath())
+                .build();
+    }
+    public NotesListDto getNoteListDoDto(Folder folder){
+        List<NoteDto> notes =new ArrayList<>();
+        noteRepository.getAllNotesSortingDoDate(folder.getPerson().getId(), folder.getPath(), "do").forEach(note->notes.add(createNewNoteDto(note)));
+        return new NotesListDto(notes);
+    }
+    //В каждом сервисе для всех элменетов дто нужно будет прописывать конвертер дто->энтити ?
+    public NoteDto createNewNoteDto (Note note){
+        return NoteDto.builder()
+                .status(note.getStatus())
+                .title(note.getTitle())
+                .description(note.getDescription())
+                .build();
+    }
+
+
+    public List <FoldersListDto> getListFoldersPath(Integer id, String parentPath) {
         return folderRepository.getAllFoldersByParentPath(id,parentPath);
     }
 

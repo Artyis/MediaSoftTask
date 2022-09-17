@@ -1,6 +1,6 @@
 package app.config;
 import app.config.security.CustomUriAuthenticationSuccsessHandler;
-import app.service.PersonService;
+import app.service.PersonAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +17,11 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private PersonService userService;
+    private PersonAuthService userService;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public WebSecurityConfig(PersonService userService, PasswordEncoder passwordEncoder) {
+    public WebSecurityConfig(PersonAuthService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
